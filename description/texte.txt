@@ -1,0 +1,17 @@
+PROJET RN : RECONNAISSANCE D’IMAGE (on dispose d’une BD et en rentrant l’image, l’image est reconnue )
+
+PLAN A SUIVRE :
+
+	1ère étape :
+		.Comprendre comment implementer une reconnaissance d’image
+		.Quelle bibliothèque utiliser pour l’implementation (Keras, Pytorch, Tensorflow …)
+		. Pour cette implementation qu’est-ce qui nous convient le plus? RNN , CNN , MLP
+		.La BD à utiliser 
+
+	2ème étape :
+		.Mise en place de notre propre architecture
+		.Données a notre disponibilité pour l’entrainement
+		.Test sur de nouvelle données 
+
+	3ème étape :
+		.mise en place de notre interface (streamlit ou angular ou react .. )

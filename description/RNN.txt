@@ -1,0 +1,11 @@
+PROJET RN : RECONNAISSANCE D’IMAGE (on dispose d’une BD et en rentrant l’image, l’image est reconnue )
+
+- Choix du dataset : https://github.com/joojs/fairface?tab=readme-ov-file
+					https://github.com/dchen236/FairFace
+- Labels : https://drive.google.com/file/d/1i1L3Yqwaio7YSOCj7ftgk8ZZchPG7dmH/view
+					https://drive.google.com/file/d/1wOdja-ezstMEp81tX1a-EYkFebev4h7D/view
+- Choix du modele InceptionResnetV1 entraine sur VGGFace2
+
+Prochaine etape :
+ - Ajouter nos images
+ - Pretaitement des images
