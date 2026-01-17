@@ -1,0 +1,395 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}   % pour les accents
+\usepackage[T1]{fontenc}      % pour les polices correctes
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+%\usepackage[left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{pifont}
+
+
+% Configuration des marges
+\geometry{hmargin=2.5cm,vmargin=2.5cm}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Projet Deep Learning -- Doppleganger Finder}
+\lhead{\thepage}
+
+% Page de garde personnalisée
+\begin{document}
+
+\begin{titlepage}
+		
+		\begin{center}\Large
+			\textsc{République De Côte D'ivoire}
+		\end{center}
+		
+		\begin{figure}[!h]
+			\begin{center}
+				\includegraphics[scale=.35]{armoiries.png}
+			\end{center}
+		\end{figure}
+		
+		\vspace*{0.05cm}
+		
+		\begin{center}\Large
+			 \textsc{International Data Science Institute}
+		\end{center}		
+		
+		\begin{figure}[!h]
+			\begin{center}
+				\includegraphics[scale=.08]{logoINP.png} \hspace*{3cm} \includegraphics[scale=.45]{images.png} \hspace*{3cm} \includegraphics[scale=.15]{POLYTECHNIQUE-IP_PARIS.png}
+			\end{center}
+		\end{figure}
+		
+		\begin{center}\Large
+			 Rapport de Projet de Deep Learning
+		\end{center}
+		
+		\vspace*{0.5cm}
+		
+		\parindent=0cm
+		\rule{\linewidth}{1mm}
+		\baselineskip=0.1cm
+		\rule{\linewidth}{0.4mm}
+		
+		\begin{center}
+   			\Large{Doppleganger Finder} \\
+		\end{center}
+		
+		\rule{\linewidth}{0.4mm}
+		\baselineskip=-0.1cm
+		\rule{\linewidth}{1mm}
+		
+		
+		\begin{center}
+			\textsc{Réalisé par :} \\ 
+			\vspace*{0.3cm}
+			\bfseries{CAMARA Farouck \\
+			\vspace*{0.2cm}
+			DIABY Aboubacar \\
+			\vspace*{0.2cm}
+			NIADA Ulrich Boris \\
+			\vspace*{0.2cm}
+			ZONGO Alphée Colombe}
+		\end{center}
+	
+		
+		\vspace*{0.3cm}
+		
+		\begin{center}
+   			 \textsc{Enseignant :}\\
+   			 \vspace*{0.3cm}
+   			 \bfseries{\textsc{Mohamed Abbas KONATE}} \\
+		\end{center}
+		
+		\vspace*{0.3cm}
+		
+		\begin{center}
+			\textsc{Master 2 Data Science \& Sécurité}
+		\end{center}
+		
+		
+		\vspace*{0.7cm}
+		
+		\begin{flushright}
+			\textbf{\textit{Année académique 2025-2026}}
+		\end{flushright}
+		
+		
+\end{titlepage}
+
+\clearpage
+
+% Résumé
+\section*{Résumé}
+Ce projet présente la conception et la mise en oeuvre d'un système de reconnaissance faciale basé sur le Deep Learning, nommé \textit{Doppleganger Finder}. L'objectif est d'identifier, au sein d'une large base de données d'images, les visages présentant la plus forte ressemblance avec une image requête fournie par l'utilisateur.\\
+
+Notre approche s'appuie sur la méthode du \textbf{Transfer Learning} via l'architecture \textbf{Inception-ResNet V1} pré-entraînée sur le dataset \textbf{VGGFace2}, transformant les visages en vecteurs de haute dimension appelés \textit{embeddings}. La similarité entre ces vecteurs est ensuite calculée à l'aide de la distance cosinus.\\
+
+Le système final intègre une interface utilisateur interactive réalisée avec \textbf{Streamlit}, permettant l'acquisition d'images (upload ou webcam), la détection automatique des visages via \textbf{MTCNN}, et la visualisation instantanée des "sosies" trouvés avec des statistiques détaillées incluant l'analyse démographique des visages similaires identifiés.\\
+
+Ce projet démontre l'efficacité des modèles pré-entraînés pour résoudre des tâches complexes de vision par ordinateur sans nécessiter de phase d'entraînement coûteuse.
+
+\newpage
+\tableofcontents
+\newpage
+
+% Contenu
+\section{Introduction}
+
+La reconnaissance faciale est devenue une technologie omniprésente, trouvant des applications
+allant de la sécurité biométrique à l'organisation d'albums photos personnels, en passant par le
+divertissement et les systèmes de contrôle d'accès.\\
+
+Cependant, développer un système performant « from scratch » (à partir de zéro) représente un
+défi majeur. Cela nécessite des puissances de calcul considérables et des jeux de données massifs
+contenant des millions d'images annotées, ressources souvent inaccessibles en contexte
+académique ou pour des équipes disposant de ressources limitées.\\
+
+C'est dans ce contexte que le Deep Learning et particulièrement le Transfer Learning offrent
+une solution élégante et efficace. En réutilisant la « connaissance » acquise par des modèles
+entraînés sur des tâches gigantesques, il devient possible de créer des applications performantes
+et fiables avec les ressources disponibles.
+
+\section{Objectif du Projet}
+
+L'objectif central de ce projet est de concevoir un système de recherche de visages similaires,
+capable de fonctionner efficacement sans phase d'apprentissage coûteuse, grâce à l'exploitation
+de modèles pré-entraînés. Concrètement, l'application développée est capable de trouver les
+sosies d'un utilisateur au sein d'une base de données publique enrichie de photographies
+personnelles, en mettant l'accent sur la précision des résultats et la qualité de l'expérience
+utilisateur.
+
+\section{Problématique}
+
+
+Dans quelle mesure un modèle de reconnaissance faciale pré-entraîné peut-il être utilisé
+efficacement, sans phase d'apprentissage supplémentaire, pour réaliser une recherche de
+similarité faciale fiable et précise ?\\
+
+Cette question soulève plusieurs enjeux : la transférabilité des connaissances acquises sur des
+tâches de reconnaissance généraliste à la tâche spécifique de recherche de similarité, la qualité et
+la robustesse des résultats face à des variations de conditions de prise de vue, et enfin la possibilité
+de déployer efficacement un tel système avec des ressources computationnelles limitées.
+
+
+\section{Fondements théoriques}
+
+\subsection{Le transfert learning}
+
+
+Le transfert learning est une technique d'apprentissage automatique où un modèle développé pour une tâche spécifique est réutilisé comme point de départ pour un modèle sur une seconde tâche. Plutôt que de commencer l'apprentissage avec des poids aléatoires, on initialise le réseau avec des poids pré-entraînés.
+
+Il existe principalement deux stratégies :\\
+
+\begin{itemize}
+    \item[\ding{114}] \textbf{Fine-tuning :} On ré-entraîne tout ou partie du modèle sur le nouveau jeu de données.\\
+    \item[\ding{114}] \textbf{Feature extraction (Extraction de caractéristiques) :} Le modèle pré-entraîné est utilisé tel quel pour transformer les données brutes (pixels) en une représentation abstraite pertinente (vecteurs).\\
+\end{itemize}
+
+Dans ce projet, nous avons opté pour le \textbf{feature extraction}. Nous utilisons le réseau de neurones comme un extracteur de signature faciale, sans modifier ses poids internes. Cette approche est justifiée par la similitude entre notre tâche (comparer des visages) et la tâche d'origine du modèle (reconnaître des visages).
+
+
+\subsection{Les embeddings faciaux et FaceNet}
+
+Un \textit{embedding} facial est une représentation vectorielle compacte d'un visage. L'idée centrale introduite par des systèmes comme FaceNet est de mapper les images de visages vers un espace euclidien où les distances correspondent directement à la similarité des visages.\\
+
+\begin{itemize}
+    \item[\ding{114}] Deux images de la même personne auront des embeddings proches (distance faible).\\
+    \item[\ding{114}] Deux images de personnes différentes auront des embeddings éloignés.\\
+\end{itemize}
+
+Dans notre projet, chaque visage est converti en un vecteur de 512 nombres réels.
+
+\subsection{Architecture Inception-ResNet}
+
+Nous utilisons l'architecture \textbf{Inception-ResNet V1} pré-entraînée sur le dataset \textbf{VGGFace2}. Cette architecture combine deux innovations majeures :\\
+
+\begin{itemize}
+    \item[\ding{114}] \textbf{Modules Inception :} Permettent de capturer des détails à différentes échelles grâce à des filtres de convolution de tailles variées.\\
+    \item[\ding{114}] \textbf{Connexions Résiduelles (ResNet) :} Facilitent l'entraînement de réseaux très profonds en permettant au gradient de mieux circuler.\\
+\end{itemize}
+
+Ce choix garantit une excellente capacité à extraire des traits faciaux discriminants, même avec des variations de pose ou d'éclairage.
+
+\section{Données utilisées}
+
+\subsection{Dataset FairFace}
+
+Le dataset FairFace a été retenu en raison de son objectif explicite de réduction des biais en reconnaissance faciale. Contrairement à d’autres jeux de données largement utilisés, FairFace propose une répartition plus équilibrée des images selon l’origine ethnique, le genre et l’âge, ce qui en fait un choix pertinent pour une analyse qualitative équitable.\\
+
+\begin{itemize}
+    \item[\ding{114}] \textbf{Description :} Il contient plus de 100 000 images de visages annotées avec l'âge, le genre et l'origine ethnique. Pour des raisons de performance locale, nous avons utilisé un sous-ensemble représentatif (environ 10 000 images).\\
+    \item[\ding{114}] \textbf{Justification :} Contrairement à de nombreux datasets historiques biaisés vers des visages à peau claire, FairFace a été conçu pour être équilibré racialement (7 groupes : White, Black, Indian, East Asian, Southeast Asian, Middle Eastern, Latino). Cela assure que notre application fonctionne équitablement pour tous les utilisateurs.
+\end{itemize}
+
+\subsection{Images personnelles}
+
+Pour rendre la démonstration plus concrète et ludique, nous avons intégré un petit jeu de données personnelles (photos des membres du projet, amis, célébrités).
+\textbf{Précautions : } Ces images ont été traitées avec rigueur. Elles sont intégrées uniquement au niveau des embeddings (représentation mathématique) dans le système de recherche, tout en restant séparées au niveau du stockage brut. Cela permet de tester le système sur des visages connus pour valider son bon fonctionnement.
+
+\section{Méthodologie et Justification}
+
+\subsection{Justification des choix méthodologiques} 
+
+Plusieurs choix méthodologiques ont été effectués dans le cadre de ce projet afin de répondre aux contraintes académiques tout en garantissant la cohérence du système proposé.\\
+
+Concernant le modèle de reconnaissance faciale, le choix s’est porté sur \textbf{InceptionResnetV1}, utilisé comme extracteur d’embeddings faciaux.\\ D’autres architectures convolutionnelles, telles que VGG16 ou ResNet classiques, auraient pu être envisagées. Toutefois, ces modèles ne sont pas spécifiquement optimisés pour la reconnaissance faciale et nécessitent généralement une phase d’adaptation ou de ré-entraînement. À l’inverse, InceptionResnetV1, inspiré des travaux FaceNet, est conçu pour produire directement des représentations faciales discriminantes, ce qui le rend particulièrement adapté à une approche basée sur le transfert learning sans apprentissage supplémentaire.\\
+
+Concernant le choix du dataset, \textbf{FairFace} a été privilégié par rapport à d’autres jeux de données populaires tels que CelebA. Bien que CelebA soit largement utilisé en vision par ordinateur, il est principalement orienté vers la reconnaissance d’attributs faciaux et présente des déséquilibres en termes de représentation ethnique. FairFace, en revanche, a été conçu explicitement pour offrir une distribution plus équilibrée des profils faciaux, ce qui constitue un avantage majeur dans un contexte d’analyse qualitative et éthique des résultats.\\
+
+En ce qui concerne la mesure de similarité, la similarité cosinus a été retenue plutôt que la distance euclidienne. Cette métrique est particulièrement adaptée aux embeddings faciaux normalisés, car elle mesure la proximité angulaire entre deux vecteurs indépendamment de leur norme. Ce choix est cohérent avec les recommandations issues des travaux sur FaceNet et permet une comparaison stable et interprétable des visages dans l’espace des embeddings.\\
+
+Enfin, le recours à un prétraitement systématique basé sur la détection et le recadrage des visages à l’aide de MTCNN s’est imposé comme une étape essentielle. Des expériences qualitatives ont montré que l’absence de prétraitement conduit à des embeddings moins discriminants, notamment lorsque l’image contient un fond complexe ou des variations importantes de pose. L’application d’un pipeline homogène à toutes les images garantit ainsi la validité des comparaisons réalisées.\\
+
+La pipeline de traitement de notre application se décompose en quatre étapes clés.
+
+\subsection{Prétraitement des images (Détection et Alignement)}
+
+Avant toute analyse, il est crucial d'isoler le visage du reste de l'image. Nous utilisons pour cela \textbf{MTCNN} (Multi-task Cascaded Convolutional Networks).\\
+
+\begin{enumerate}
+    \item \textbf{Détection :} MTCNN localise le visage et fournit une "bounding box".\\
+    \item \textbf{Alignement et Recadrage :} Le visage est découpé et redimensionné à une taille standard de $160 \times 160$ pixels.\\
+    \item \textbf{Normalisation :} Les pixels (0-255) sont normalisés pour correspondre aux attentes du modèle Inception (valeurs entre -1 et 1).\\
+\end{enumerate}
+
+Cette étape standardise toutes les entrées, garantissant que le modèle de reconnaissance se concentre uniquement sur les traits du visage et non sur le fond ou la taille de l'image.
+
+\subsection{Extraction des embeddings}
+
+Une fois le visage préparé (tenseur $160 \times 160$), il traverse le réseau \textbf{InceptionResnetV1}.\\
+
+\begin{itemize}
+    \item[\ding{114}] Le modèle fonctionne en mode \textit{évaluation} (pas d'apprentissage).\\
+    \item[\ding{114}] La sortie est un vecteur brut de dimension 512.\\
+    \item[\ding{114}] \textbf{Normalisation L2 :} Étape critique où le vecteur est divisé par sa norme. Cela place tous les visages sur une base de rayon 1, rendant le calcul de similarité cosinus équivalent à un simple produit scalaire.
+\end{itemize}
+
+\subsection{Fusion des données}
+
+Nous avons créé un processus automatisé qui :\\
+
+\begin{enumerate}
+    \item Parcourt les dossiers d'images (FairFace et Personnelles).
+    \item Calcule les embeddings pour chaque image valide.
+    \item Stocke les vecteurs dans un fichier \texttt{.npy} (NumPy) optimisé pour la lecture rapide.
+    \item Génère un fichier de métadonnées \texttt{meta.csv} contenant les chemins, les sources et les identités associées.\\
+\end{enumerate}
+
+Récemment, nous avons enrichi ce fichier \texttt{meta.csv} avec les données démographiques de FairFace (âge, genre) pour permettre des analyses statistiques avancées dans l'application.
+
+\subsection{Recherche de similarité}
+
+Lorsqu'un utilisateur envoie une photo, son embedding $u$ est comparé à tous les embeddings de la base $v_i$ via la \textbf{similarité cosinus} :
+
+\[
+\mathrm{Similarité}(u, v_i) = \frac{u \cdot v_i}{\|u\| \, \|v_i\|}
+\]
+
+Comme nos vecteurs sont déjà normalisés ($\|u\| = \|v_i\| = 1$), la formule se simplifie en :
+
+\[
+\mathrm{Similarité}(u, v_i) = u \cdot v_i
+\]
+
+Nous trions ensuite les résultats par score décroissant pour afficher les $k$ visages les plus proches (Top-K).
+
+\section{Interface utilisateur}
+
+\subsection{Choix de l'outil : Streamlit}
+
+Nous avons choisi \textbf{Streamlit} pour développer l'interface graphique. C'est un framework Python open-source spécifiquement conçu pour la Data Science. Il nous a permis de transformer nos scripts d'analyse en une application web interactive très rapidement, sans avoir à gérer HTML, CSS ou JavaScript complexe.
+
+\subsection{Fonctionnalités avancées}
+
+L'interface a été conçue pour être moderne et intuitive (thème sombre, animations). Les fonctionnalités principales incluent :\\
+
+\begin{itemize}
+    \item[\ding{114}] \textbf{Modes d'entrée flexibles :} L'utilisateur peut uploader une image ou prendre un selfie directement via sa webcam.\\
+    \item[\ding{114}] \textbf{Visualisation en temps réel :} Affichage de l'image originale et du visage détecté/recadré par l'IA.\\
+    \item[\ding{114}] \textbf{Résultats enrichis :} Affichage des sosies avec des badges de confiance colorés (Vert/Jaune/Rouge) selon le degré de ressemblance.\\
+    \item[\ding{114}] \textbf{Statistiques analytiques :}
+    \begin{itemize}
+        \item Graphique de distribution des scores pour voir où se situe le "match" par rapport à la moyenne.\\
+        \item \textbf{Analyse démographique :} Graphiques montrant la répartition d'âge et de genre des sosies trouvés, donnant une indication sur les traits perçus par l'IA.
+    \end{itemize}
+\end{itemize}
+
+\section{Résultats et analyse}
+
+\subsection{Analyse des scores de similarité}
+
+Le système de reconnaissance faciale repose sur la comparaison d’embeddings faciaux à l’aide de la similarité cosinus. Pour chaque image requête, les visages de la base sont classés selon leur score de similarité, compris entre −1 et 1.\\
+
+L’analyse des résultats obtenus montre que les correspondances jugées visuellement pertinentes présentent généralement des scores de similarité élevés, typiquement supérieurs à 0,7. À l’inverse, les visages dont la similarité est inférieure à 0,6 correspondent le plus souvent à des individus visuellement distincts de l’image requête.\\
+
+Ces observations permettent de définir empiriquement des zones de confiance, dans lesquelles les résultats retournés par le système sont plus fiables d’un point de vue qualitatif.
+
+
+\subsection{Influence du prétraitement des images}
+
+
+Une comparaison qualitative a été réalisée entre les résultats obtenus avec et sans application du prétraitement par détection et recadrage des visages. Les expériences montrent que l’absence de prétraitement conduit à des embeddings moins discriminants, notamment lorsque l’image contient un fond complexe ou plusieurs visages.\\
+
+À l’inverse, l’utilisation systématique du même pipeline de prétraitement, basé sur la détection faciale par MTCNN, améliore la cohérence des résultats et la pertinence visuelle des correspondances retournées. Cette étape apparaît ainsi comme un élément clé du système.
+
+
+\subsection{Analyse critique des résultats}
+
+
+Malgré des résultats globalement satisfaisants, certaines limites ont été observées. La performance du système dépend fortement de la qualité de l’image requête, en particulier en termes d’éclairage, de résolution et d’angle de prise de vue. Les profils très inclinés ou partiellement visibles peuvent conduire à des scores de similarité moins fiables.\\
+
+Par ailleurs, bien que le dataset FairFace vise à réduire les biais en reconnaissance faciale, certains déséquilibres peuvent subsister en fonction des caractéristiques faciales et des conditions de capture. Ces limitations soulignent l’importance d’une analyse critique des résultats et ouvrent la voie à des améliorations futures.
+
+\subsection{Analyse qualitative}
+
+Les tests effectués montrent une pertinence visuelle impressionnante.\\
+
+\begin{itemize}
+    \item[\ding{114}] \textbf{Fidélité des traits :} Le système capture bien la forme du visage, la présence de lunettes, de barbe, ou le type de coiffure.\\
+    \item[\ding{114}] \textbf{Robustesse :} Même avec des éclairages différents, le modèle parvient souvent à retrouver la bonne personne si elle est présente dans la base personnelle.\\
+    \item[\ding{114}] \textbf{FairFace :} Les correspondances dans la base FairFace, bien que n'étant pas la "même" personne, partagent souvent une structure faciale et une ethnie très proches.
+\end{itemize}
+
+\subsection{Limites et biais}
+
+Malgré ses performances, le système a des limites :\\
+
+\begin{itemize}
+    \item[\ding{114}] \textbf{Qualité de l'image requête :} Une photo floue, trop sombre ou avec un visage de profil extrême (non détecté par MTCNN) échoue.\\
+    \item[\ding{114}] \textbf{Dépendance au prétraitement :} La qualité de l'embedding dépend entièrement de la qualité du recadrage. Si MTCNN cadre mal (ex: coupe le menton), la similarité chute.\\
+    \item[\ding{114}] \textbf{Biais de la base :} Si la base de données ne contient personne ressemblant à l'utilisateur (cas rare avec FairFace mais possible), le système renverra quand même le "moins pire" résultat, avec un score de confiance faible.
+\end{itemize}
+
+\section{Conclusion et perspectives}
+
+
+L'objectif principal de concevoir un système de reconnaissance faciale fonctionnel est atteint avec succès. Nous avons réussi à intégrer un pipeline complet de Deep Learning (MTCNN + InceptionResnetV1) dans une interface utilisateur fluide, professionnelle et interactive.\\
+
+Ce projet a été extrêmement formateur sur plusieurs dimensions :\\
+
+\begin{itemize}
+	\item[\ding{114}] Manipulation avancée de tenseurs et architectures de réseaux de neurones profonds.\\
+    \item[\ding{114}] Importance critique du prétraitement et du nettoyage des données en vision par ordinateur.\\
+    \item[\ding{114}]Utilisation pratique et efficace du Transfer Learning en environnement de production.\\
+    \item[\ding{114}]Mise en place d'une interface utilisateur accessible.
+\end{itemize}
+
+
+\newpage
+
+\section*{Références}
+\addcontentsline{toc}{section}{Références}
+   
+    		\begin{description}
+    			\item{1.} Transfert learning, Andrew Ng – Transfer Learning, \url{https://www.youtube.com/watch?v=yofjFQddwHE}.
+    			\item{2.} TensorFlow – Transfer Learning and Fine-Tuning, \url{https://www.tensorflow.org/tutorials/images/transfer_learning}.
+    			\item{3.} Reconnaissance faciale et embeddings. Schroff, Kalenichenko, Philbin – FaceNet: A Unified Embedding for Face Recognition and Clustering, \url{https://arxiv.org/abs/1503.03832}.
+    			\item{4.} Architecture du modèle utilisé. Szegedy et al. – Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning, \url{https://arxiv.org/abs/1602.07261}.
+    			\item{5.} Dataset d’entraînement du modèle (pré-entraînement), \url{https://www.robots.ox.ac.uk/~vgg/data/vgg_face2/}.
+    			\item{6.} Dataset utilisé dans le projet, \url{https://github.com/joojs/fairface/}.
+    			\item{7.} facenet-pytorch – Implémentation officielle PyTorch, \url{https://github.com/timesler/facenet-pytorch}.
+    			\item{8.} Cosine Similarity – Référence pédagogique, \url{https://en.wikipedia.org/wiki/Cosine_similarity}.
+    			\item{9.} Détection et prétraitement des visages. Zhang et al. – Joint Face Detection and Alignment using Multi-task Cascaded Convolutional Neural Networks (MTCNN), \url{https://arxiv.org/abs/1604.02878}.
+    		\end{description}
+    		
+\end{document}

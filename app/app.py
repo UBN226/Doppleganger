@@ -209,7 +209,7 @@ st.markdown("""
 @st.cache_resource
 def load_model():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    mtcnn = MTCNN(image_size=160, margin=0, keep_all=False, device=device)
+    mtcnn = MTCNN(image_size = 160, margin = 0, keep_all = False, device = device)
     model = InceptionResnetV1(pretrained="vggface2").to(device).eval()
     return mtcnn, model, device
 
@@ -225,7 +225,6 @@ def process_query_image(pil_img):
     if face is None:
         return None, None
     
-    # Tensor → image PIL (pour affichage)
     face_img = face.permute(1, 2, 0)
     face_img = (face_img + 1) / 2
     face_img = (face_img * 255).byte().cpu().numpy()
@@ -307,10 +306,10 @@ total_images = len(meta)
 fairface_count = len(meta[meta["source"] == "fairface"])
 personal_count = len(meta[meta["source"] == "our_faces"])
 
-col1, col2 = st.sidebar.columns(2)
-col1.metric("Total", f"{total_images:,}")
+col1, col2, col3 = st.sidebar.columns(3)
+col1.metric("Images Perso", f"{personal_count:,}")
 col2.metric("FairFace", f"{fairface_count:,}")
-
+col3.metric("Total", f"{total_images:,}")
 
 # ============================================
 # ACQUISITION DE L'IMAGE
@@ -500,6 +499,83 @@ if query_img is not None:
         
         plt.tight_layout()
         st.pyplot(fig2)
+    
+    # ============================================
+    # STATISTIQUES DÉMOGRAPHIQUES (FairFace uniquement)
+    # ============================================
+    # Vérifier si les colonnes démographiques existent et si des sosies FairFace sont présents
+    fairface_sosies = topk[topk["source"] == "fairface"]
+    
+    if "age" in topk.columns and "gender" in topk.columns and len(fairface_sosies) > 0:
+        st.markdown('<div class="section-header">👥 Profil Démographique des Sosies</div>', unsafe_allow_html=True)
+        
+        col_demo1, col_demo2 = st.columns(2)
+        
+        with col_demo1:
+            st.markdown("**🚻 Répartition par genre**")
+            
+            fig3, ax3 = plt.subplots(figsize=(6, 4), facecolor='#0f172a')
+            ax3.set_facecolor('#1e293b')
+            
+            gender_counts = fairface_sosies["gender"].value_counts()
+            colors_gender = ['#6366f1', '#ec4899']  # Bleu pour Male, Rose pour Female
+            
+            wedges, texts, autotexts = ax3.pie(
+                gender_counts.values, 
+                labels=gender_counts.index.map(lambda x: "Homme" if x == "Male" else "Femme"),
+                autopct='%1.0f%%',
+                colors=colors_gender[:len(gender_counts)],
+                textprops={'color': 'white', 'fontsize': 12},
+                wedgeprops={'edgecolor': 'white', 'linewidth': 1}
+            )
+            for autotext in autotexts:
+                autotext.set_fontweight('bold')
+            
+            plt.tight_layout()
+            st.pyplot(fig3)
+        
+        with col_demo2:
+            st.markdown("**📅 Répartition par tranche d'âge**")
+            
+            fig4, ax4 = plt.subplots(figsize=(6, 4), facecolor='#0f172a')
+            ax4.set_facecolor('#1e293b')
+            
+            # Ordre des tranches d'âge
+            age_order = ['0-2', '3-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', 'more than 70']
+            age_counts = fairface_sosies["age"].value_counts()
+            age_counts = age_counts.reindex([a for a in age_order if a in age_counts.index])
+            
+            bars = ax4.bar(
+                range(len(age_counts)), 
+                age_counts.values,
+                color='#8b5cf6',
+                edgecolor='white',
+                linewidth=0.5
+            )
+            
+            ax4.set_xticks(range(len(age_counts)))
+            ax4.set_xticklabels(age_counts.index, rotation=45, ha='right', color='white', fontsize=9)
+            ax4.set_ylabel("Nombre de sosies", color='white')
+            ax4.tick_params(colors='white')
+            ax4.spines['top'].set_visible(False)
+            ax4.spines['right'].set_visible(False)
+            ax4.spines['bottom'].set_color('white')
+            ax4.spines['left'].set_color('white')
+            
+            plt.tight_layout()
+            st.pyplot(fig4)
+        
+        # Interprétation démographique
+        gender_majority = fairface_sosies["gender"].mode().iloc[0] if len(fairface_sosies) > 0 else None
+        age_majority = fairface_sosies["age"].mode().iloc[0] if len(fairface_sosies) > 0 else None
+        
+        gender_text = "masculins" if gender_majority == "Male" else "féminins"
+        
+        st.info(f"""
+            📊 **Analyse démographique** : Parmi vos {len(fairface_sosies)} sosies FairFace, 
+            la majorité sont des visages **{gender_text}** de la tranche d'âge **{age_majority}**.
+            Cela suggère que vos traits faciaux correspondent davantage à ce profil démographique.
+        """)
     
     # Interprétation
     st.markdown("---")

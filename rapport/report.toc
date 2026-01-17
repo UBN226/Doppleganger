@@ -1,0 +1,28 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {section}{\numberline {2}Objectif du Projet}{3}{section.2}%
+\contentsline {section}{\numberline {3}Problématique}{3}{section.3}%
+\contentsline {section}{\numberline {4}Fondements théoriques}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Le transfert learning}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Les embeddings faciaux et FaceNet}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Architecture Inception-ResNet}{4}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Données utilisées}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Dataset FairFace}{4}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Images personnelles}{4}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Méthodologie et Justification}{5}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Justification des choix méthodologiques}{5}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Prétraitement des images (Détection et Alignement)}{5}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Extraction des embeddings}{6}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Fusion des données}{6}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Recherche de similarité}{6}{subsection.6.5}%
+\contentsline {section}{\numberline {7}Interface utilisateur}{7}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Choix de l'outil : Streamlit}{7}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Fonctionnalités avancées}{7}{subsection.7.2}%
+\contentsline {section}{\numberline {8}Résultats et analyse}{7}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Analyse des scores de similarité}{7}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Influence du prétraitement des images}{7}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Analyse critique des résultats}{8}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Analyse qualitative}{8}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Limites et biais}{8}{subsection.8.5}%
+\contentsline {section}{\numberline {9}Conclusion et perspectives}{8}{section.9}%
+\contentsline {section}{Références}{10}{section.9}%
