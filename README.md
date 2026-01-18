@@ -66,7 +66,7 @@ Une application de **Deep Learning** qui trouve vos sosies dans une base de donn
 ┌─────────────────────────────────────────────────────────────┐
 │              InceptionResnetV1 (VGGFace2)                   │
 │                                                             │
-│   Conv → Inception Blocks → AvgPool → FC → L2 Normalize    │
+│   Conv → Inception Blocks → AvgPool → FC → L2 Normalize     │
 │                                                             │
 │                  Sortie: Vecteur 512D                       │
 └────────────────────────┬────────────────────────────────────┘
@@ -75,7 +75,7 @@ Une application de **Deep Learning** qui trouve vos sosies dans une base de donn
 ┌─────────────────────────────────────────────────────────────┐
 │               Similarité Cosinus                            │
 │                                                             │
-│         sim(A,B) = (A · B) / (||A|| × ||B||)               │
+│         sim(A,B) = (A · B) / (||A|| × ||B||)                │
 │                                                             │
 │              Comparaison avec 10,000+ embeddings            │
 └────────────────────────┬────────────────────────────────────┘
@@ -102,7 +102,7 @@ Une application de **Deep Learning** qui trouve vos sosies dans une base de donn
 ```bash
 # 1. Cloner le projet
 git clone <repository-url>
-cd dl_project
+cd Doppleganger
 
 # 2. Créer un environnement virtuel (recommandé)
 python -m venv venv
